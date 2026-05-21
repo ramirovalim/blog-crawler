@@ -5,6 +5,7 @@
     "moduleResolution": "NodeNext",
     "allowJs": true,
     "target": "ES2022",
+    "rootDir": "./",
     "outDir": "dist",
     "noUnusedLocals": false,
     "lib": ["DOM"]

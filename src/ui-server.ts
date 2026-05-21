@@ -5,8 +5,13 @@ import fs from "fs/promises";
 import path from "path";
 import fetch from "node-fetch";
 import dotenv from "dotenv";
+import { GoogleGenAI } from "@google/genai";
 
 dotenv.config();
+
+const ai = new GoogleGenAI({
+  apiKey: process.env.GOOGLE_API_KEY,
+});
 
 const app = express();
 app.use(cors());
@@ -70,7 +75,7 @@ app.post("/api/generate", async (req, res) => {
       );
     }
 
-    const system = `You are a creative blog idea assistant. Do NOT copy verbatim from sources. Produce a concise blog idea: title, one-paragraph summary, bullet list of 3 angles/sections, and a suggested tone. Keep short and original.`;
+    const system = `You are a creative blog idea assistant. Do NOT copy verbatim from sources. Produce a detailed blog idea: title, one-paragraph warm introduction, and a story about the topic. Keep it concise yet complete, and original, human-like. No matter what, the output must be in Brazilian-Portuguese.`;
     const userPrompt = `
 Base style (how the output should sound):
 ${baseStyle}
@@ -80,12 +85,29 @@ ${selected.join("\n\n---\n\n")}
 
 Chosen theme: ${theme}
 
-Create a new blog idea (title, one-paragraph summary, 3 section bullets, suggested tone). Do not reproduce long passages.`;
+Create a new blog idea (title, one-paragraph warm introduction/summary, story development, following suggested tone).`;
 
     // Prefer Google's REST Generative API if GOOGLE_API_KEY is set
     if (process.env.GOOGLE_API_KEY) {
       try {
-        const apiKey = process.env.GOOGLE_API_KEY;
+        const r = await ai.models.generateContent({
+          model: "gemini-3.5-flash",
+          contents: userPrompt,
+          config: {
+            temperature: 0.7,
+            systemInstruction: system,
+          },
+        });
+
+        if (r.text === undefined) {
+          return res
+            .status(502)
+            .json({ error: "Google Generative API error", detail: JSON.stringify(r) });
+        }
+
+        const out = r.text;
+        return res.json({ result: out });
+        /* const apiKey = process.env.GOOGLE_API_KEY;
         const url = `https://generativelanguage.googleapis.com/v1beta2/models/text-bison-001:generateText?key=${apiKey}`;
         const r = await fetch(url, {
           method: "POST",
@@ -106,7 +128,7 @@ Create a new blog idea (title, one-paragraph summary, 3 section bullets, suggest
           jr?.candidates?.[0]?.content ||
           jr?.reply ||
           JSON.stringify(jr, null, 2);
-        return res.json({ result: out });
+        return res.json({ result: out }); */
       } catch (e) {
         console.error("Google REST call failed:", e?.message || e);
       }
