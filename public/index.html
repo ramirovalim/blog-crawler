@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Blog Idea Generator</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        margin: 20px;
+        max-width: 980px;
+      }
+      textarea {
+        width: 100%;
+        height: 120px;
+      }
+      .posts {
+        max-height: 360px;
+        overflow: auto;
+        border: 1px solid #ddd;
+        padding: 8px;
+      }
+      .post {
+        padding: 6px;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .meta {
+        flex: 1;
+      }
+      button {
+        padding: 8px 12px;
+      }
+      .result {
+        white-space: pre-wrap;
+        background: #fafafa;
+        padding: 12px;
+        margin-top: 12px;
+        border: 1px solid #eee;
+      }
+      .preview {
+        background: #fffdf6;
+        padding: 8px;
+        border: 1px solid #f0e2b6;
+        margin-top: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Blog Idea Generator</h1>
+    <label>Base style (paste an example text or instructions):</label>
+    <textarea
+      id="baseStyle"
+      placeholder="E.g. 'friendly, magazine-style, ~500 words, conversational'"
+    ></textarea>
+
+    <h3>Available posts (select some inspirations)</h3>
+    <div id="posts" class="posts">Loading…</div>
+
+    <h3>Theme (optional)</h3>
+    <input id="theme" placeholder="e.g. extraction, brewing technique" />
+
+    <div style="margin-top: 12px">
+      <button id="generate">Generate idea</button>
+    </div>
+
+    <h3>Preview</h3>
+    <div id="preview" class="preview">
+      Click "Preview" on a post to see an excerpt.
+    </div>
+
+    <h3>Result</h3>
+    <div id="result" class="result"></div>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

@@ -5,9 +5,7 @@ import { loadInitialBlogsUrls } from "./utils/blogs-list/index.js";
 
 const startUrls = await loadInitialBlogsUrls();
 
-log.setLevel(log.LEVELS.DEBUG);
-
-log.debug("Setting up crawler.");
+log.setLevel(log.LEVELS.INFO);
 
 const crawler = new CheerioCrawler({
   // proxyConfiguration: new ProxyConfiguration({ proxyUrls: ["..."] }),
@@ -15,8 +13,8 @@ const crawler = new CheerioCrawler({
   requestHandler: router,
 });
 
-log.debug(`Starting crawl of ${startUrls.length} URLs...`);
+log.info(`Starting crawl of ${startUrls.length} URLs...`);
 
 await crawler.run(startUrls);
 
-log.debug("Crawl finished. Results are in Key-Value Store.");
+log.info("Crawl finished. Results are in Key-Value Store.");

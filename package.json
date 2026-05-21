@@ -6,7 +6,11 @@
   "description": "This is an example of a Crawlee project.",
   "dependencies": {
     "@crawlee/impit-client": "^3.0.0",
+    "cors": "^2.8.5",
     "crawlee": "^3.0.0",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "node-fetch": "^3.3.2",
     "playwright": "^1.60.0"
   },
   "devDependencies": {
@@ -19,9 +23,11 @@
     "start": "npm run start:dev",
     "start:prod": "node dist/main.js",
     "start:dev": "tsx src/main.ts",
+    "build-index": "tsx scripts/build-index.ts",
+    "ui": "tsx src/ui-server.ts",
     "build": "tsc",
-    "test": "echo \"Error: oops, the actor has no tests yet, sad!\" && exit 1"
+    "test": "echo \"No tests yet!\" && exit 0"
   },
-  "author": "It's not you it's me",
+  "author": "It\"s not you it\"s me",
   "license": "ISC"
 }
