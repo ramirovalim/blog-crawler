@@ -1,4 +1,3 @@
-// @ts-nocheck
 import express from "express";
 import cors from "cors";
 import fs from "fs/promises";
@@ -21,7 +20,7 @@ app.use(express.static(path.join(process.cwd(), "public")));
 const INDEX_FILE = path.join(process.cwd(), "storage", "indexed_posts.json");
 const DATASET_DIR = path.join(process.cwd(), "storage", "datasets", "default");
 
-app.get("/api/posts", async (_req, res) => {
+app.get("/api/posts", async (_req: Request, res: any) => {
   try {
     const idx = JSON.parse(await fs.readFile(INDEX_FILE, "utf8"));
     res.json(idx);
@@ -54,7 +53,7 @@ app.get("/api/post/:id", async (req, res) => {
   } catch (err) {
     res
       .status(404)
-      .json({ error: "Post not found", detail: String(err?.message || err) });
+      .json({ error: "Post not found", detail: String(err instanceof Error ? err.message : err) });
   }
 });
 
@@ -130,7 +129,8 @@ Create a new blog idea (title, one-paragraph warm introduction/summary, story de
           JSON.stringify(jr, null, 2);
         return res.json({ result: out }); */
       } catch (e) {
-        console.error("Google REST call failed:", e?.message || e);
+        console.error("Google REST call failed:", e instanceof Error ? e.message : e);
+        return res.status(502).json({ error: "Google Generative API error", detail: String(e) });
       }
     }
 
@@ -163,13 +163,13 @@ Create a new blog idea (title, one-paragraph warm introduction/summary, story de
       return res.status(502).json({ error: "AI provider error", detail: txt });
     }
 
-    const data = await resp.json();
+    const data = (await resp.json()) as any;
     const text =
       data.choices?.[0]?.message?.content || JSON.stringify(data, null, 2);
-    res.json({ result: text });
+    return res.json({ result: text });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Generation failed", detail: String(err) });
+    return res.status(500).json({ error: "Generation failed", detail: String(err) });
   }
 });
 
